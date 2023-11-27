@@ -2,6 +2,13 @@ from tkinter import *
 import ttkbootstrap as tb
 # from ttkbootstrap import Style
 import tkinter.scrolledtext as st
+from NTRUencrypt import NTRUencrypt
+from NTRUdecrypt import NTRUdecrypt
+
+
+encrypt = NTRUencrypt()
+decrypt = NTRUdecrypt()
+
 
 root = tb.Window(themename="flatly")
 # root = Tk
@@ -59,16 +66,28 @@ def validate():
     plain_text = plain_text_entry.get()
     if public_key == "" or plain_text == "":
         return False
-    return True
+    return public_key, plain_text
 
 def generatedText(): 
+    print("in generatedText")
+    
     if not validate():
         return
     cipher_label['state'] = 'normal'
-    ct = """Y44_OSsEU0u4XmtTFn5N0NCOLTvzBKkXopi1CkaIegCuPprHxDWVAIkIC7WP9LpIzx6b0AqrIbphtbikqidoXAleeHzAUY-18atiyA1qNRD9scV077rcV1p7j2jOaQp2ccsWaoVkbWUpUNN3tN-F3Suv8CE4Dl6yH74aNuJh8TVDX3Z6pbeQ-tsmGFGIQKOteOVYxJc9ziXG_MVgPRZYGJPxlb7ysPKt5ldgVmUxgRcVGi_1ctQ-mJjoBMMdqmWcNlXYkECU4rSex0nBYWywZiDD7k0FqkELzn3ayfEYo-biI8uYvwAfhBcEDf_zcZyCaKWYZMUSqrTGBEzaDAO5Icwnus6YYBluNQGN-O80z2SRWVIEURIFqVdtcbqQbTUnJ8VIs7LKBr-pnbAIOBHW82RHOh1oxEwESpBjBL8vBJAv_fZpMbzWAbPp2IFSYNe6LArisfZK9zSBqsyqc6n2_s-TjXKMxbad18JoMVa03JFPGXy7xJ4JogwRqErVK58BeAfmN_UaH2yAiaBQqUJo5qvv6loN2xU5Wyzz8WzQ7X7FMC1CNQ_atGHY0jOfD5AXY_gHm1QjrmWAPbA95YwdCSDJ3Z4JNGVzzaAo6E8R3rZKbRokM2w9KetmDZPV8bGH-EKwulwxAt8KIkbfk_7pZLduOjUIoomjk8eHPnICdHP5-0-I65FVCIpdedWINBC-Odc5IkPhV8I8m4ZzCnxqKB60UZXXGz1fD6yavkRqaQbVQKr-4AqM_FXW4Z4AAE7Cu0-pYgoTo0RTQ7zXMc0zpX-LqE7iB20cPWQMn9nMN1k2O9XQA6Voh5mnuKcWKynl"""
+    public_key, plain_text = validate()
+    print(public_key, plain_text)
+    ct=""
+    try:
+        encrypt.setKeyFromStr(public_key)
+        encrypt.encryptString(plain_text)
+        ct = encrypt.Me
+        print(ct)
+    except:
+        ct="Invalid Public Key"
     cipher_label.insert('end', ct) 
     cipher_label['state'] = 'disabled'
     button['state'] = 'disabled'
+
 
 ## for cypertext
 cipher_frame = tb.Frame(main_frame,style='secondary.TFrame',relief="flat",borderwidth=10)
@@ -99,6 +118,39 @@ button.grid(row = 4, column = 4 ,pady=15 , columnspan=2,ipadx=9,ipady=5)
 # title_Label.grid(row = 0, column = 0 )
 
 
+#for Plain text
+priv=""
+pub=""
+
+def generate():
+    print("in generate")
+    decrypt.genKeys()
+    priv, pub = decrypt.Keys2Str()
+    private_label1['state'] = 'normal'
+    private_label1.insert('end', priv)
+    private_label1['state'] = 'disabled'
+    public_label1['state'] = 'normal'
+    public_label1.insert('end', pub)
+    public_label1['state'] = 'disabled'
+    # print(priv+"\n"+pub)
+
+def decryptMessage():
+    print("in decryptMessage")
+    cipher_text = cipher_entry1.get()
+    if cipher_text == "":
+        return
+    plain_text_label1['state'] = 'normal'
+    plain_text=""
+    try:
+        plain_text=decrypt.decryptString(cipher_text)
+        print(plain_text)
+    except:
+        plain_text="Invalid Cipher Text"
+
+    plain_text_label1.insert('end', plain_text)
+    plain_text_label1['state'] = 'disabled'
+    button1['state'] = 'disabled'
+
 main_frame1 = tb.Frame(tab2,bootstyle="light")
 main_frame1.grid(row = 1, column = 0,padx = 140, pady = 35,columnspan=2)
  # main_frame.configure(style='primary.TFrame')
@@ -114,10 +166,10 @@ public_frame1.grid(row = 1, column = 4,padx = 30 ,pady=20)
 public_heading1  = tb.Label(public_frame1, text = "  Public Key: ", font = ("helvetica", 16),style='secondary.Inverse.TLabel' )
 public_heading1.grid(row = 0, column = 0 , pady=7,columnspan=2)
 
-generate_button1 = tb.Button(public_frame1, text="Generate",command=generatedText, style='success.outline.TButton')
+generate_button1 = tb.Button(public_frame1, text="Generate",command=generate, style='success.outline.TButton')
 generate_button1.grid(row = 0, column = 3 ,pady=7 ,ipadx=6,ipady=4)
 
-public_label1 = st.ScrolledText(public_frame1, height=1, width =50 ,font=("helvetica", 12),state='disabled')
+public_label1 = st.ScrolledText(public_frame1, height=3, width =50 ,font=("helvetica", 12),state='disabled')
 public_label1.grid(row = 1, column = 1  ,padx= 7, pady=10,columnspan=3)
 
 
@@ -129,7 +181,7 @@ private_frame1.grid(row = 2, column = 4 ,pady=20)
 private_heading1  = tb.Label(private_frame1, text = "  private Key: ", font = ("helvetica", 16),style='secondary.Inverse.TLabel' )
 private_heading1.grid(row = 0, column = 0 , pady=7,columnspan=2)
 
-private_label1 = st.ScrolledText(private_frame1, height=1, width =50 ,font=("helvetica", 12),state='disabled')
+private_label1 = st.ScrolledText(private_frame1, height=3, width =50 ,font=("helvetica", 12),state='disabled')
 private_label1.grid(row = 1, column = 1  ,padx= 7, pady=10,columnspan=3)
 
 
@@ -144,7 +196,6 @@ cipher_heading1.grid(row = 0, column = 0 ,padx= 7, pady=7,ipadx=10,ipady=5)
 cipher_entry1 = tb.Entry(cipher_frame1,font=("helvetica", 16))
 cipher_entry1.grid(row = 0, column = 1  ,padx= 7,pady=7, ipadx=35 ,ipady=5)
 
-#for Plain text
 
 plain_text_frame1 = tb.Frame(main_frame1,style='secondary.TFrame',relief="flat",borderwidth=4)
 plain_text_frame1.grid(row = 4, column = 4 ,pady=20)
@@ -156,7 +207,7 @@ plain_text_label1 = st.ScrolledText(plain_text_frame1, height=1, width =36 ,font
 plain_text_label1.grid(row = 0, column = 1  ,padx= 7, pady=7)
 
 ## for button
-button1 = tb.Button(main_frame1, text="Decrypt",command=generatedText, style='success.TButton')
+button1 = tb.Button(main_frame1, text="Decrypt",command= decryptMessage, style='success.TButton')
 button1.grid(row = 5, column = 4 ,pady=10 , columnspan=2,ipadx=9,ipady=5)
 
 
