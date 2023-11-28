@@ -10,7 +10,7 @@ encrypt = NTRUencrypt()
 decrypt = NTRUdecrypt()
 
 
-root = tb.Window(themename="flatly")
+root = tb.Window(themename="cosmo")
 # root = Tk
 root.title("Asymmetric Lattice Based Cryptography System")
 # root.iconbitmap("img/python.ico")
@@ -84,6 +84,10 @@ def generatedText():
         print(ct)
     except:
         ct="Invalid Public Key"
+    # copy the selected text to clipboard
+    selected_text = ct
+    root.clipboard_clear()
+    root.clipboard_append(selected_text)
     cipher_label.insert('end', ct) 
     cipher_label['state'] = 'disabled'
     button['state'] = 'disabled'
@@ -132,6 +136,10 @@ def generate():
     public_label1['state'] = 'normal'
     public_label1.insert('end', pub)
     public_label1['state'] = 'disabled'
+    selected_text = pub
+    #copy the selected text to clipboard
+    root.clipboard_clear()
+    root.clipboard_append(selected_text)
     # print(priv+"\n"+pub)
 
 def decryptMessage():
@@ -152,7 +160,7 @@ def decryptMessage():
     button1['state'] = 'disabled'
 
 main_frame1 = tb.Frame(tab2,bootstyle="light")
-main_frame1.grid(row = 1, column = 0,padx = 140, pady = 35,columnspan=2)
+main_frame1.grid(row = 1, column = 0,padx = 140, pady = 15,columnspan=2)
  # main_frame.configure(style='primary.TFrame')
 
 title_lable = tb.Label(main_frame1, text = " Decrypt ", font = ("helvetica", 25), style='secondary.Inverse.TLabel')
@@ -203,7 +211,7 @@ plain_text_frame1.grid(row = 4, column = 4 ,pady=20)
 plain_text_heading1  = tb.Label(plain_text_frame1, text = " Plain Text: ", font = ("helvetica", 16),style='secondary.Inverse.TLabel' )
 plain_text_heading1.grid(row = 0, column = 0 ,padx= 7, pady=7)
 
-plain_text_label1 = st.ScrolledText(plain_text_frame1, height=1, width =36 ,font=("helvetica", 12),state='disabled')
+plain_text_label1 = st.ScrolledText(plain_text_frame1, height=2, width =36 ,font=("helvetica", 12),state='disabled')
 plain_text_label1.grid(row = 0, column = 1  ,padx= 7, pady=7)
 
 ## for button
