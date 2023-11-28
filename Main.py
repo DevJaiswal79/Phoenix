@@ -2,8 +2,8 @@ from tkinter import *
 import ttkbootstrap as tb
 # from ttkbootstrap import Style
 import tkinter.scrolledtext as st
-from NTRUencrypt import NTRUencrypt
-from NTRUdecrypt import NTRUdecrypt
+from NTRUpy.NTRUencrypt import NTRUencrypt
+from NTRUpy.NTRUdecrypt import NTRUdecrypt
 
 
 encrypt = NTRUencrypt()
