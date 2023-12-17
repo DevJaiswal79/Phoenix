@@ -55,7 +55,7 @@ public_key_entry.grid(row = 0, column = 1,padx= 7 , pady=7, ipadx=40 )
 plain_text_frame = tb.Frame(main_frame,style='secondary.TFrame',relief="flat",borderwidth=4)
 plain_text_frame.grid(row = 2, column = 4 ,pady=20)
 
-plain_text_label = tb.Label(plain_text_frame, text = "Plain Text", font = ("helvetica", 16),style='secondary.Inverse.TLabel' )
+plain_text_label = tb.Label(plain_text_frame, text = "Plain Text", font = ("helvetica", 16),style='secondar n  y.Inverse.TLabel' )
 plain_text_label.grid(row = 0, column = 0 ,padx= 7, pady=7,ipadx=10,ipady=5)
 
 plain_text_entry = tb.Entry(plain_text_frame,font=("helvetica", 16))
